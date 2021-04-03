@@ -84,5 +84,16 @@ def create_pocket_from_lines(lines, snapshot):
         return None
     pocket = Pocket()
     pocket.snapshot = snapshot
+    pocket.total_sasa = get_value_for_pocket_line(lines[3])
+    pocket.polar_sasa = get_value_for_pocket_line(lines[4])
+    pocket.apolar_sasa = get_value_for_pocket_line(lines[5])
+    pocket.volume = get_value_for_pocket_line(lines[6])
+    pocket.polar_atom_proportion = get_value_for_pocket_line(lines[15])
+    pocket.alpha_sphere_density = get_value_for_pocket_line(lines[16])
+    pocket.center_alpha_sphere_max_dist = get_value_for_pocket_line(lines[17])
+    pocket.flexibility = get_value_for_pocket_line(lines[18])
     return pocket
 
+
+def get_value_for_pocket_line(line):
+    return line.split()[-1]
