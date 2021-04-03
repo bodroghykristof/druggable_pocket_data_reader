@@ -5,7 +5,7 @@ CREATE TABLE atom (
     id serial primary key,
     atom_type varchar(10),
     amino_acid_name varchar(3),
-    protein_id integer,
+    protein_id varchar(1),
     amino_acid_id integer,
     occupancy decimal,
     temperature_factor decimal,
