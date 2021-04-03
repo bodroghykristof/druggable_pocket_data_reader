@@ -23,3 +23,23 @@ def insert_atom_position_into_table(cursor, atom_position):
                     """
     cursor.execute(insert_query,
                    vars(atom_position))
+
+
+@connection_handler
+def insert_pocket_into_table(cursor, pocket):
+    insert_query = """
+               INSERT INTO pocket
+                (id, snapshot, score, druggability_score, alpha_spheres_no, total_sasa, polar_sasa, apolar_sasa, 
+                volume, mean_local_hydrobhopic_density, mean_alpha_sphere_radius, mean_alpha_sphere_solvent_access, 
+                hydrophobicity_score, volume_score, polarity_score, charge_score, polar_atom_proportion, 
+                alpha_sphere_density, center_alpha_sphere_max_dist, flexibility, mean_b_factor, 
+                pocket_volume_monte_carlo, pocket_volume_convex_hull, apolar_alpha_sphere_no)
+                VALUES(DEFAULT, %(snapshot)s, %(score)s, %(druggability_score)s, %(alpha_spheres_no)s, %(total_sasa)s, 
+                %(polar_sasa)s, %(apolar_sasa)s, %(volume)s, %(mean_local_hydrobhopic_density)s,
+                %(mean_alpha_sphere_radius)s, %(mean_alpha_sphere_solvent_access)s, %(hydrophobicity_score)s, 
+                %(volume_score)s, %(polarity_score)s, %(charge_score)s, %(polar_atom_proportion)s, 
+                %(alpha_sphere_density)s, %(center_alpha_sphere_max_dist)s, %(flexibility)s, %(mean_b_factor)s, 
+                %(pocket_volume_monte_carlo)s, %(pocket_volume_convex_hull)s, %(apolar_alpha_sphere_no)s)
+                    """
+    cursor.execute(insert_query,
+                   vars(pocket))

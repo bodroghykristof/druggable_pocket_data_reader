@@ -1,6 +1,7 @@
 # READ VARIOUS FILE TYPES INTO MODEL OBJECTS
 from model.atom import Atom
 from model.atom_position import AtomPosition
+from model.pocket import Pocket
 from util.exceptions import AtomDataParseException
 
 
@@ -57,3 +58,31 @@ def create_atom_position_from_pdb_line(property_array, snapshot):
         return atom_position
     except IndexError:
         raise AtomDataParseException("Could not parse atom position - the provided file is not valid PDB format")
+
+
+def read_from_info_txt_file(path, snapshot):
+    pockets = []
+    pocket_lines = []
+    info_file = open(path, "r")
+    while True:
+        line = info_file.readline()
+        if not line:
+            break
+        if line.startswith("Pocket"):
+            pocket = create_pocket_from_lines(pocket_lines, snapshot)
+            if pocket is not None:
+                pockets.append(pocket)
+            pocket_lines.clear()
+        else:
+            pocket_lines.append(line)
+    info_file.close()
+    return pockets
+
+
+def create_pocket_from_lines(lines, snapshot):
+    if len(lines) == 0:
+        return None
+    pocket = Pocket()
+    pocket.snapshot = snapshot
+    return pocket
+
