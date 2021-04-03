@@ -1,0 +1,2 @@
+class AtomDataParseException(Exception):
+    pass

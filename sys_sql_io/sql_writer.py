@@ -12,3 +12,14 @@ def insert_atom_into_table(cursor, atom):
                     """
     cursor.execute(insert_query,
                    vars(atom))
+
+
+@connection_handler
+def insert_atom_position_into_table(cursor, atom_position):
+    insert_query = """
+               INSERT INTO atom_position
+                (id, snapshot, atom_id, pos_x, pos_y, pos_z)
+                VALUES(DEFAULT, %(snapshot)s, %(atom_id)s, %(pos_x)s, %(pos_y)s, %(pos_z)s)
+                    """
+    cursor.execute(insert_query,
+                   vars(atom_position))

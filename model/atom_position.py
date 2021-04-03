@@ -1,7 +1,6 @@
 class AtomPosition:
 
-    def __init__(self, id_, snapshot, atom_id, pos_x, pos_y, pos_z):
-        self.id_ = id_
+    def __init__(self, snapshot, atom_id, pos_x, pos_y, pos_z):
         self.snapshot = snapshot
         self.atom_id = atom_id
         self.pos_x = pos_x
