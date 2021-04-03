@@ -97,3 +97,46 @@ def create_pocket_from_lines(lines, snapshot):
 
 def get_value_for_pocket_line(line):
     return line.split()[-1]
+
+
+def read_from_pocket_pdb_file(path, pocket):
+    pocket_properties = []
+    atoms_in_pocket = []
+    general_info_lines = True
+    info_file = open(path, "r")
+    while True:
+        line = info_file.readline()
+        if not line:
+            break
+        if line.startswith("HEADER"):
+            if general_info_lines:
+                general_info_lines = set_general_info_lines_state_while_reading(line)
+            else:
+                pocket_properties.append(line)
+        elif line.startswith("ATOM"):
+            atoms_in_pocket.append(line)
+    info_file.close()
+    enrich_pocket_data_with_new_properties(pocket, pocket_properties)
+    return [atom.split()[1] for atom in atoms_in_pocket]
+
+
+def set_general_info_lines_state_while_reading(current_line):
+    return not current_line.startswith("HEADER Information about the pocket")
+
+
+def enrich_pocket_data_with_new_properties(pocket, pocket_properties):
+    pocket.score = get_value_for_pocket_line(pocket_properties[0])
+    pocket.druggability_score = get_value_for_pocket_line(pocket_properties[1])
+    pocket.alpha_spheres_no = get_value_for_pocket_line(pocket_properties[2])
+    pocket.mean_local_hydrobhopic_density = get_value_for_pocket_line(pocket_properties[12])
+    pocket.mean_alpha_sphere_radius = get_value_for_pocket_line(pocket_properties[3])
+    pocket.mean_alpha_sphere_solvent_access = get_value_for_pocket_line(pocket_properties[4])
+    pocket.hydrophobicity_score = get_value_for_pocket_line(pocket_properties[6])
+    pocket.volume_score = get_value_for_pocket_line(pocket_properties[8])
+    pocket.polarity_score = get_value_for_pocket_line(pocket_properties[7])
+    pocket.charge_score = get_value_for_pocket_line(pocket_properties[11])
+    pocket.mean_b_factor = get_value_for_pocket_line(pocket_properties[5])
+    pocket.mean_local_hydrobhopic_density = get_value_for_pocket_line(pocket_properties[12])
+    pocket.pocket_volume_monte_carlo = get_value_for_pocket_line(pocket_properties[9])
+    pocket.pocket_volume_convex_hull = get_value_for_pocket_line(pocket_properties[10])
+    pocket.apolar_alpha_sphere_no = get_value_for_pocket_line(pocket_properties[13])
