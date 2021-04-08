@@ -2,7 +2,8 @@ ALTER TABLE IF EXISTS ONLY public.atom DROP CONSTRAINT IF EXISTS pk_atom_id CASC
 ALTER TABLE IF EXISTS ONLY public.atom_position DROP CONSTRAINT IF EXISTS pk_atom_position_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.atom_position DROP CONSTRAINT IF EXISTS fk_atom_position_atom_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.pocket DROP CONSTRAINT IF EXISTS pk_pocket_id CASCADE;
-
+ALTER TABLE IF EXISTS ONLY public.pocket_atom DROP CONSTRAINT IF EXISTS fk_pocket_atom_pocket_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.pocket_atom DROP CONSTRAINT IF EXISTS fk_pocket_atom_atom_id CASCADE;
 
 DROP TABLE IF EXISTS public.atom_position;
 CREATE TABLE atom_position (
@@ -58,3 +59,16 @@ CREATE TABLE pocket (
     pocket_volume_convex_hull decimal,
     apolar_alpha_sphere_no integer
 );
+
+DROP TABLE IF EXISTS public.pocket_atom;
+CREATE TABLE pocket_atom (
+    id serial primary key,
+    pocket_id integer,
+    atom_id integer
+);
+
+ALTER TABLE ONLY pocket_atom
+    ADD CONSTRAINT fk_pocket_atom_pocket_id FOREIGN KEY (pocket_id) REFERENCES pocket(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY pocket_atom
+    ADD CONSTRAINT fk_pocket_atom_atom_id FOREIGN KEY (atom_id) REFERENCES atom(id) ON DELETE CASCADE;
