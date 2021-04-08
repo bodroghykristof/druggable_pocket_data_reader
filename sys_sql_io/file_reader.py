@@ -2,10 +2,11 @@
 from model.atom import Atom
 from model.atom_position import AtomPosition
 from model.pocket import Pocket
+from model.pocket_atom import PocketAtom
 from util.exceptions import AtomDataParseException
 
 
-def read_from_pdb(path, action, snapshot):
+def read_from_pdb(path, action, snapshot=1):
     entities = []
     pdb_file = open(path, "r")
     while True:
@@ -14,10 +15,9 @@ def read_from_pdb(path, action, snapshot):
             break
         else:
             property_array = line.split()
-            if property_array[0] != "ATOM":
-                raise AtomDataParseException("Line for atom or atom position should start with the phrase ATOM")
-            entity = create_entity_from_pdb_line(property_array, action, snapshot)
-            entities.append(entity)
+            if property_array[0] == "ATOM":
+                entity = create_entity_from_pdb_line(property_array, action, snapshot)
+                entities.append(entity)
     pdb_file.close()
     return entities
 
@@ -117,7 +117,7 @@ def read_from_pocket_pdb_file(path, pocket):
             atoms_in_pocket.append(line)
     info_file.close()
     enrich_pocket_data_with_new_properties(pocket, pocket_properties)
-    return [atom.split()[1] for atom in atoms_in_pocket]
+    return [PocketAtom(pocket.id_, int(atom.split()[1])) for atom in atoms_in_pocket]
 
 
 def set_general_info_lines_state_while_reading(current_line):

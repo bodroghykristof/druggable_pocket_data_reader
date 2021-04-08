@@ -40,6 +40,19 @@ def insert_pocket_into_table(cursor, pocket):
                 %(volume_score)s, %(polarity_score)s, %(charge_score)s, %(polar_atom_proportion)s, 
                 %(alpha_sphere_density)s, %(center_alpha_sphere_max_dist)s, %(flexibility)s, %(mean_b_factor)s, 
                 %(pocket_volume_monte_carlo)s, %(pocket_volume_convex_hull)s, %(apolar_alpha_sphere_no)s)
+                RETURNING id
                     """
     cursor.execute(insert_query,
                    vars(pocket))
+    return cursor.fetchone()['id']
+
+
+@connection_handler
+def insert_pocket_atom_into_table(cursor, pocket_atom):
+    insert_query = """
+               INSERT INTO pocket_atom
+                (id, pocket_id, atom_id)
+                VALUES(DEFAULT, %(pocket_id)s, %(atom_id)s)
+                    """
+    cursor.execute(insert_query,
+                   vars(pocket_atom))
