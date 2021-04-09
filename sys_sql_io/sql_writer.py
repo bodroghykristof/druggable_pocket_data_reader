@@ -56,3 +56,15 @@ def insert_pocket_atom_into_table(cursor, pocket_atom):
                     """
     cursor.execute(insert_query,
                    vars(pocket_atom))
+
+
+@connection_handler
+def insert_filling_sphere_into_table(cursor, filling_sphere):
+    insert_query = """
+               INSERT INTO filling_sphere
+                (id, snapshot, c_or_o_value, atom_type, pocket_id, pos_x, pos_y, pos_z, occupancy, temperature_factor)
+                VALUES(DEFAULT, %(snapshot)s, %(c_or_o_value)s, %(atom_type)s, %(pocket_id)s, 
+                %(pos_x)s, %(pos_y)s, %(pos_z)s, %(occupancy)s, %(temperature_factor)s)
+                    """
+    cursor.execute(insert_query,
+                   vars(filling_sphere))

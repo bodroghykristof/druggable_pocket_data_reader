@@ -3,10 +3,11 @@ from model.atom import Atom
 from model.atom_position import AtomPosition
 from model.pocket import Pocket
 from model.pocket_atom import PocketAtom
+from model.filling_sphere import FillingSphere
 from util.exceptions import AtomDataParseException
 
 
-def read_from_pdb(path, action, snapshot=1):
+def read_from_pdb_pqr(path, action, snapshot=0, pocket_id=0):
     entities = []
     pdb_file = open(path, "r")
     while True:
@@ -16,19 +17,22 @@ def read_from_pdb(path, action, snapshot=1):
         else:
             property_array = line.split()
             if property_array[0] == "ATOM":
-                entity = create_entity_from_pdb_line(property_array, action, snapshot)
+                entity = create_entity_from_pdb_pqr_line(property_array, action, snapshot, pocket_id)
                 entities.append(entity)
     pdb_file.close()
     return entities
 
 
-def create_entity_from_pdb_line(property_array, action, snapshot):
+def create_entity_from_pdb_pqr_line(property_array, action, snapshot, pocket_id):
     if action == "ATOM":
         return create_atom_from_pdb_line(property_array)
     elif action == "POSITION":
         return create_atom_position_from_pdb_line(property_array, snapshot)
+    elif action == "FILLING_SPHERE":
+        return create_filling_sphere_from_pqr_line(property_array, snapshot, pocket_id)
     else:
-        raise AtomDataParseException("Invalid action - only atom or atom position can be extracted from PDB format")
+        raise AtomDataParseException('''Action not supported - only atom, atom_position (PDB) and 
+                                    filling sphere (PQR) can be extracted''')
 
 
 def create_atom_from_pdb_line(property_array):
@@ -56,6 +60,22 @@ def create_atom_position_from_pdb_line(property_array, snapshot):
         pos_z = property_array[8]
         atom_position = AtomPosition(snapshot, atom_id, pos_x, pos_y, pos_z)
         return atom_position
+    except IndexError:
+        raise AtomDataParseException("Could not parse atom position - the provided file is not valid PDB format")
+
+
+def create_filling_sphere_from_pqr_line(property_array, snapshot, pocket_id):
+    try:
+        c_or_o_value = property_array[2]
+        atom_type = property_array[3]
+        pos_x = property_array[5]
+        pos_y = property_array[6]
+        pos_z = property_array[7]
+        occupancy = property_array[8]
+        temperature_factor = property_array[9]
+        filling_sphere = FillingSphere(snapshot, c_or_o_value, atom_type, pocket_id, pos_x, pos_y, pos_z,
+                                       occupancy, temperature_factor)
+        return filling_sphere
     except IndexError:
         raise AtomDataParseException("Could not parse atom position - the provided file is not valid PDB format")
 
