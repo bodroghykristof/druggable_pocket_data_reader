@@ -13,7 +13,9 @@ CREATE TABLE atom_position (
     atom_id integer,
     pos_x decimal,
     pos_y decimal,
-    pos_z decimal
+    pos_z decimal,
+    occupancy decimal,
+    temperature_factor decimal
 );
 
 
@@ -24,8 +26,6 @@ CREATE TABLE atom (
     amino_acid_name varchar(3),
     protein_id varchar(1),
     amino_acid_id integer,
-    occupancy decimal,
-    temperature_factor decimal,
     atom_symbol varchar(3)
 );
 

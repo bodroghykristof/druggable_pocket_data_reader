@@ -42,11 +42,8 @@ def create_atom_from_pdb_line(property_array):
         amino_acid_name = property_array[3]
         protein_id = property_array[4]
         amino_acid_id = property_array[5]
-        occupancy = property_array[9]
-        temperature_factor = property_array[10]
         atom_symbol = property_array[11]
-        atom = Atom(_id, atom_type, amino_acid_name, protein_id, amino_acid_id,
-                    occupancy, temperature_factor, atom_symbol)
+        atom = Atom(_id, atom_type, amino_acid_name, protein_id, amino_acid_id, atom_symbol)
         return atom
     except IndexError:
         raise AtomDataParseException("Could not parse atom - the provided file is not valid PDB format")
@@ -58,7 +55,9 @@ def create_atom_position_from_pdb_line(property_array, snapshot):
         pos_x = property_array[6]
         pos_y = property_array[7]
         pos_z = property_array[8]
-        atom_position = AtomPosition(snapshot, atom_id, pos_x, pos_y, pos_z)
+        occupancy = property_array[9]
+        temperature_factor = property_array[10]
+        atom_position = AtomPosition(snapshot, atom_id, pos_x, pos_y, pos_z, occupancy, temperature_factor)
         return atom_position
     except IndexError:
         raise AtomDataParseException("Could not parse atom position - the provided file is not valid PDB format")

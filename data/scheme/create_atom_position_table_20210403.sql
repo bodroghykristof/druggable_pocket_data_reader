@@ -8,7 +8,9 @@ CREATE TABLE atom_position (
     atom_id integer,
     pos_x decimal,
     pos_y decimal,
-    pos_z decimal
+    pos_z decimal,
+    occupancy decimal,
+    temperature_factor decimal
 );
 
 ALTER TABLE ONLY atom_position
