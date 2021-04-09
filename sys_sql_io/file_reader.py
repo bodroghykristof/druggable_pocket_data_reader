@@ -76,7 +76,7 @@ def create_filling_sphere_from_pqr_line(property_array, snapshot, pocket_id):
                                        occupancy, temperature_factor)
         return filling_sphere
     except IndexError:
-        raise AtomDataParseException("Could not parse atom position - the provided file is not valid PDB format")
+        raise AtomDataParseException("Could not parse atom position - the provided file is not valid PQR format")
 
 
 def read_from_info_txt_file(path, snapshot):
