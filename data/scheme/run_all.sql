@@ -1,6 +1,7 @@
 ALTER TABLE IF EXISTS ONLY public.atom DROP CONSTRAINT IF EXISTS pk_atom_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.atom_position DROP CONSTRAINT IF EXISTS pk_atom_position_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.atom_position DROP CONSTRAINT IF EXISTS fk_atom_position_atom_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.filling_sphere DROP CONSTRAINT IF EXISTS fk_filling_sphere_pocket_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.pocket DROP CONSTRAINT IF EXISTS pk_pocket_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.pocket_atom DROP CONSTRAINT IF EXISTS fk_pocket_atom_pocket_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.pocket_atom DROP CONSTRAINT IF EXISTS fk_pocket_atom_atom_id CASCADE;
@@ -67,8 +68,25 @@ CREATE TABLE pocket_atom (
     atom_id integer
 );
 
+DROP TABLE IF EXISTS public.filling_sphere;
+CREATE TABLE filling_sphere (
+    id serial primary key,
+    snapshot integer,
+    atom_type varchar(10),
+    c_or_o_value varchar(1),
+    pocket_id integer,
+    pos_x decimal,
+    pos_y decimal,
+    pos_z decimal,
+    occupancy decimal,
+    temperature_factor decimal
+);
+
 ALTER TABLE ONLY pocket_atom
     ADD CONSTRAINT fk_pocket_atom_pocket_id FOREIGN KEY (pocket_id) REFERENCES pocket(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY pocket_atom
     ADD CONSTRAINT fk_pocket_atom_atom_id FOREIGN KEY (atom_id) REFERENCES atom(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY filling_sphere
+    ADD CONSTRAINT fk_filling_sphere_pocket_id FOREIGN KEY (pocket_id) REFERENCES pocket(id) ON DELETE CASCADE;
