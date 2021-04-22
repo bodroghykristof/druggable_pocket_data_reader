@@ -1,9 +1,14 @@
 import time
 import util.date_time as date_time
 
+INFO_FILE = 'logs/info.log'
+ERROR_FILE = 'logs/error.log'
+
 
 def info(message):
-    print(f'INFO - {date_time.get_time()} - {message}')
+    log = f'INFO - {date_time.get_time()} - {message}'
+    print(log)
+    persist_log(log, INFO_FILE)
 
 
 def warning(message):
@@ -11,7 +16,9 @@ def warning(message):
 
 
 def error(message):
-    print(f'ERROR - {date_time.get_time()} - {message}')
+    log = f'ERROR - {date_time.get_time()} - {message}'
+    print(log)
+    persist_log(log, ERROR_FILE)
 
 
 def intro():
@@ -25,3 +32,13 @@ def intro():
     Have patience my friend!''')
     time.sleep(5)
 
+
+def clear_logs():
+    open(INFO_FILE, 'w').close()
+    open(ERROR_FILE, 'w').close()
+
+
+def persist_log(log, file):
+    with open(file, "a") as log_file:
+        log_file.write(log + "\n")
+    log_file.close()

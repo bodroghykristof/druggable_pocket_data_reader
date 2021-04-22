@@ -6,21 +6,27 @@ from model.pocket_atom import PocketAtom
 from model.filling_sphere import FillingSphere
 from util.exceptions import AtomDataParseException
 
+import traceback
+import util.logger as logger
+
 
 def read_from_pdb_pqr(path, action, snapshot=0, pocket_id=0):
-    entities = []
-    pdb_file = open(path, "r")
-    while True:
-        line = pdb_file.readline()
-        if not line:
-            break
-        else:
-            property_array = line.split()
-            if property_array[0] == "ATOM":
-                entity = create_entity_from_pdb_pqr_line(property_array, action, snapshot, pocket_id)
-                entities.append(entity)
-    pdb_file.close()
-    return entities
+    try:
+        entities = []
+        pdb_file = open(path, "r")
+        while True:
+            line = pdb_file.readline()
+            if not line:
+                break
+            else:
+                property_array = line.split()
+                if property_array[0] == "ATOM":
+                    entity = create_entity_from_pdb_pqr_line(property_array, action, snapshot, pocket_id)
+                    entities.append(entity)
+        pdb_file.close()
+        return entities
+    except:
+        logger.error(traceback.format_exc())
 
 
 def create_entity_from_pdb_pqr_line(property_array, action, snapshot, pocket_id):
@@ -80,22 +86,25 @@ def create_filling_sphere_from_pqr_line(property_array, snapshot, pocket_id):
 
 
 def read_from_info_txt_file(path, snapshot):
-    pockets = []
-    pocket_lines = []
-    info_file = open(path, "r")
-    while True:
-        line = info_file.readline()
-        if not line:
-            break
-        if line.startswith("Pocket"):
-            pocket = create_pocket_from_lines(pocket_lines, snapshot)
-            if pocket is not None:
-                pockets.append(pocket)
-            pocket_lines.clear()
-        else:
-            pocket_lines.append(line)
-    info_file.close()
-    return pockets
+    try:
+        pockets = []
+        pocket_lines = []
+        info_file = open(path, "r")
+        while True:
+            line = info_file.readline()
+            if not line:
+                break
+            if line.startswith("Pocket"):
+                pocket = create_pocket_from_lines(pocket_lines, snapshot)
+                if pocket is not None:
+                    pockets.append(pocket)
+                pocket_lines.clear()
+            else:
+                pocket_lines.append(line)
+        info_file.close()
+        return pockets
+    except:
+        logger.error(traceback.format_exc())
 
 
 def create_pocket_from_lines(lines, snapshot):
@@ -119,24 +128,27 @@ def get_value_for_pocket_line(line):
 
 
 def read_from_pocket_pdb_file(path, pocket):
-    pocket_properties = []
-    atoms_in_pocket = []
-    general_info_lines = True
-    info_file = open(path, "r")
-    while True:
-        line = info_file.readline()
-        if not line:
-            break
-        if line.startswith("HEADER"):
-            if general_info_lines:
-                general_info_lines = set_general_info_lines_state_while_reading(line)
-            else:
-                pocket_properties.append(line)
-        elif line.startswith("ATOM"):
-            atoms_in_pocket.append(line)
-    info_file.close()
-    enrich_pocket_data_with_new_properties(pocket, pocket_properties)
-    return [PocketAtom(pocket.id_, int(atom.split()[1])) for atom in atoms_in_pocket]
+    try:
+        pocket_properties = []
+        atoms_in_pocket = []
+        general_info_lines = True
+        info_file = open(path, "r")
+        while True:
+            line = info_file.readline()
+            if not line:
+                break
+            if line.startswith("HEADER"):
+                if general_info_lines:
+                    general_info_lines = set_general_info_lines_state_while_reading(line)
+                else:
+                    pocket_properties.append(line)
+            elif line.startswith("ATOM"):
+                atoms_in_pocket.append(line)
+        info_file.close()
+        enrich_pocket_data_with_new_properties(pocket, pocket_properties)
+        return [PocketAtom(pocket.id_, int(atom.split()[1])) for atom in atoms_in_pocket]
+    except:
+        logger.error(traceback.format_exc())
 
 
 def set_general_info_lines_state_while_reading(current_line):
