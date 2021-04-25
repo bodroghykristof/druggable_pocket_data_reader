@@ -1,8 +1,10 @@
 import time
 import util.date_time as date_time
+from util.constants import *
 
-INFO_FILE = 'logs/info.log'
-ERROR_FILE = 'logs/error.log'
+
+INFO_FILE = LOG_DIR + 'info.log'
+ERROR_FILE = LOG_DIR + 'error.log'
 
 
 def info(message):
@@ -24,13 +26,24 @@ def error(message):
 def intro():
     print('''FPOCKET DATA READER\n''')
     time.sleep(1)
-    print('''Preparing to read data...''')
-    time.sleep(1)
-    print('''The process may take several hours depending on the input file size.
-    Please do not turn off the computer or interrupt the process
-    During reading FPOCKET DATA READER will continuously inform you about the progress
-    Have patience my friend!''')
+    print('''    As a first step you can define the snapshot interval which you would like to process.
+    For larger input files it is advised to split the task into smaller subprocesses to reduce the likelihood
+    of unexpected errors such as electric network or other types of hardware malfunctions.\n''')
     time.sleep(5)
+
+
+def prepare():
+    print('''\n    Now FPOCKET DATA READER will hunt pockets for you and process data conversion.
+    All pocket and atom data will be persisted into the configured database.\n''')
+    time.sleep(3)
+    print('''    Preparing to read data...\n''')
+    time.sleep(3)
+    print('''    The process may take several hours depending on the input file size and the provided parameters.
+    Please do not turn off the computer or interrupt the process.
+    During reading FPOCKET DATA READER will continuously inform you about the progress. The printed logs are saved into
+    the corresponding file of the logs directory for later investigation.
+    Have patience my friend!\n''')
+    time.sleep(10)
 
 
 def clear_logs():
