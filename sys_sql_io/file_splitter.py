@@ -4,7 +4,7 @@ import os
 INPUT_FILE = "resources/sample_data/first_ten.pdb"
 
 
-def split_input_file(start=1, end=0):
+def split_input_file(start=1, end=0, step=1):
     count = 1
     destination_file = None
 
@@ -15,7 +15,7 @@ def split_input_file(start=1, end=0):
 
             line = input_file.readline()
 
-            if count >= start and (end == 0 or count <= end):
+            if count >= start and (end == 0 or count <= end) and (count - start) % step == 0:
                 if not destination_file:
                     destination_file = open(f'resources/sample_data/snapshot_{count}.pdb', "a+")
                 destination_file.write(line)
