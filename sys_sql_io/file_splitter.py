@@ -23,13 +23,11 @@ def split_input_file(input_file, start=1, end=0, step=1):
                     destination_file.close()
                     destination_file = None
                     logger.info(f'File ready: {count}')
-                    count += 1
-                    if end != 0 and count >= end:
-                        break
 
-            else:
-                if line.startswith("END"):
-                    count += 1
+            if line.startswith("END"):
+                count += 1
+            if end != 0 and count > end:
+                break
 
         if destination_file:
             destination_file.close()
