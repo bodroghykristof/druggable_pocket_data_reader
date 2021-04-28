@@ -10,7 +10,7 @@ def atoms_exist_in_table(cursor):
         cursor.execute(query)
         return cursor.fetchone()['count'] > 0
     except:
-        logger.error(traceback.format_exc())\
+        logger.error(traceback.format_exc())
 
 
 @connection_handler

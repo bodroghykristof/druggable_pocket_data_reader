@@ -1,0 +1,11 @@
+sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib
+sudo -i -u postgres
+createuser --interactive
+### set superuser to y
+ALTER USER your_user_name WITH PASSWORD 'new_password_for_you';
+createdb fpocket
+
+sudo apt-get install python3-dev libpq-dev postgresql-client postgresql-client-common
+sudo pip install psycopg2
+
