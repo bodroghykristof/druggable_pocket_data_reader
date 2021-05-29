@@ -93,6 +93,8 @@ def read_from_info_txt_file(path, snapshot):
         while True:
             line = info_file.readline()
             if not line:
+                pocket = create_pocket_from_lines(pocket_lines, snapshot)
+                pockets.append(pocket)
                 break
             if line.startswith("Pocket"):
                 pocket = create_pocket_from_lines(pocket_lines, snapshot)

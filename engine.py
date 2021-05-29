@@ -1,5 +1,5 @@
-import util.logger as logger
-import util.user_input as user_input
+from util import logger
+from util import user_input
 from sys_sql_io import file_reader, sql_writer
 from util.constants import *
 import subprocess
@@ -16,10 +16,7 @@ def ask_for_parameters():
             print("Last snapshot number should not be less than last")
             continue
         break
-    atoms_already_read = user_input.ask_for_binary_input_with_default('''\nWould you like to read atom base data as well (T or F)?
-This process is only required to run once, for the first interval.
-Running the process again will result in errors''', "F")
-    return first_snapshot, last_snapshot, step, atoms_already_read
+    return first_snapshot, last_snapshot, step
 
 
 def ask_for_input_file():
