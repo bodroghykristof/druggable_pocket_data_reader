@@ -40,3 +40,17 @@ def get_pockets_by_snapshot_with_high_drug_score_and_not_with_id(cursor, moment,
         return cursor.fetchall()
     except:
         logger.error(traceback.format_exc())
+
+
+@connection_handler
+def save_sibling_arrays_by_id(cursor, pocket_id, sibling_pocket_ids, sibling_snapshots):
+    query = """
+         update pocket
+         set sibling_pockets = %(sibling_pocket_ids)s, sibling_timestamps = %(sibling_snapshots)s
+         where id = %(pocket_id)s"""
+    try:
+        cursor.execute(query, {'pocket_id': pocket_id,
+                               'sibling_pocket_ids': sibling_pocket_ids,
+                               'sibling_snapshots': sibling_snapshots})
+    except:
+        logger.error(traceback.format_exc())
