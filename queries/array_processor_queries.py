@@ -29,28 +29,32 @@ def fetch_one_pocket_with_high_drug_score(cursor, score, offset):
 
 
 @connection_handler
-def get_pockets_by_snapshot_with_high_drug_score_and_not_with_id(cursor, moment, score, id):
+def get_pockets_by_snapshot_with_high_drug_score(cursor, moment, score):
     query = """
          select id, snapshot, amino_acids
          from pocket
-         where druggability_score > %(score)s and snapshot = %(moment)s and id != %(id)s
+         where druggability_score > %(score)s and snapshot = %(moment)s
          order by id"""
     try:
-        cursor.execute(query, {'score': score, 'moment': moment, 'id': id})
+        cursor.execute(query, {'score': score, 'moment': moment})
         return cursor.fetchall()
     except:
         logger.error(traceback.format_exc())
 
 
 @connection_handler
-def save_sibling_arrays_by_id(cursor, pocket_id, sibling_pocket_ids, sibling_snapshots):
+def save_sibling_arrays_by_id(cursor, pocket_id, sibling_pocket_ids_50,
+                              sibling_snapshots_50, sibling_pocket_ids_75,
+                              sibling_snapshots_75):
     query = """
          update pocket
-         set sibling_pockets = %(sibling_pocket_ids)s, sibling_timestamps = %(sibling_snapshots)s
+         set sibling_pockets_50 = %(sibling_pocket_ids_50)s, sibling_snapshots_50 = %(sibling_snapshots_50)s, sibling_pockets_75 = %(sibling_pocket_ids_75)s, sibling_snapshots_75 = %(sibling_snapshots_75)s
          where id = %(pocket_id)s"""
     try:
         cursor.execute(query, {'pocket_id': pocket_id,
-                               'sibling_pocket_ids': sibling_pocket_ids,
-                               'sibling_snapshots': sibling_snapshots})
+                               'sibling_pocket_ids_50': sibling_pocket_ids_50,
+                               'sibling_snapshots_50': sibling_snapshots_50,
+                               'sibling_pocket_ids_75': sibling_pocket_ids_75,
+                               'sibling_snapshots_75': sibling_snapshots_75})
     except:
         logger.error(traceback.format_exc())

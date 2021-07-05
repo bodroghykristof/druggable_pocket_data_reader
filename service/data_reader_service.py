@@ -1,6 +1,6 @@
 from sys_sql_io import file_splitter
 import util.logger as logger
-import engine
+from service import engine
 from queries import sql_reader
 
 
