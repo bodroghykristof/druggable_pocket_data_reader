@@ -1,4 +1,5 @@
 class Atom:
+    """Represents an atom of the protein."""
 
     def __init__(self, id_, atom_type, amino_acid_name, protein_id, amino_acid_id, atom_symbol):
         self.id_ = id_

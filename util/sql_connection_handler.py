@@ -1,9 +1,15 @@
+""" This file contains general utility methods to establish database connection
+for executing SQL queries."""
+
+
 import os
 import psycopg2
 import psycopg2.extras
 
 
 def get_connection_string():
+    """ Coins a connection string from environment variables for SQL connection"""
+
     user_name = os.environ.get('PSQL_USER_NAME')
     password = os.environ.get('PSQL_PASSWORD')
     host = os.environ.get('PSQL_HOST')
@@ -23,6 +29,8 @@ def get_connection_string():
 
 
 def open_database():
+    """Opens a database connection using Psycopg2 library."""
+
     try:
         connection_string = get_connection_string()
         connection = psycopg2.connect(connection_string)
@@ -34,6 +42,10 @@ def open_database():
 
 
 def connection_handler(function):
+    """This is a decorator used for executing SQL queries used throughout all the
+    codebase. Functions decorated with connection_handler take and additional
+    cursor parameter which can be used to run queries on the database"""
+
     def wrapper(*args, **kwargs):
         connection = open_database()
         dict_cur = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)

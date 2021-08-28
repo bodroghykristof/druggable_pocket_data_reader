@@ -1,30 +1,20 @@
-from queries import array_processor_queries
+from sql.amino_acid_array_processor import amino_acid_array_processor_queries
+import util.logger as logger
 import time
 
 
 def process_amino_acid_arrays():
-    """
-    count_all = count_pockets_where_score_higher_than_0.5()
-    for i in range count_all:
-        pocket = fetch using i as offset and 1 as limit - use the same ordering and filter!
-        timestamp_of_pocket = pocket.get_timestamp()
-        sibling_pockets = []
-        sibling_timestamps = []
-         for j in range timestamp_of_pocket +- 100:
-            pockets_of_timestamp = fetch in j time with drug score higher than 0.5
-            best_match_similarity = - infinity
-            current_sibling_pocket = None
-            for pocket_to_compare in pockets_of_timestamp:
-                similarity = calculate_similarity(pocket, pocket_to_compare)
-                if similarity > best_match_similarity:
-                    best_match_similarity = similarity
-                    current_sibling_pocket = pocket_to_compare
-            if best_match_similarity > 0.75:
-                sibling_pockets.add(current_sibling_pocket)
-                sibling_timestamps.add(j)
-        pocket.set_sibling_pockets(sibling_pockets)
-        pocket.set_sibling_timestamps(sibling_timestamps)
-        save pocket
+    """This is the entry point of the amino_acid_array_processor module of the application. This function
+    fetches formerly read and processed pockets, selects those which have a good potential of being useful in
+    drug discovery and attempts to find best matching sibling pockets their corresponding snapshots for each of them.
+
+    In this module we investigate a +- 'investigated radius' nanoseconds environment of a given pocket (also limited by
+    start and end of simulations). For each snapshot we traverse the pockets in that snapshot and select the pocket
+    most similar to the investigated one. If the similarity (defined by the ratio of common amino acids present in the
+    pockets) is high enough we put this pocket into a wider (sibling_pocket_ids_75) and/or a narrower
+    (sibling_pocket_ids_50) set of pockets belonging to the investigated one. We also put the snapshot ID of the
+    matching pocket into sibling_snapshots_50 and sibling_snapshots_75 arrays. We save these for arrays into
+    corresponding columns of table 'pocket' of the database.
     """
 
     start_time = time.time()
@@ -33,11 +23,11 @@ def process_amino_acid_arrays():
     intersection_limit_higher = 0.75
     experiment_size = 10  # 1000 or 1200
     investigated_radius = 100
-    number_of_pockets = array_processor_queries.count_pockets_with_high_drug_score(drug_score_limit)
+    number_of_pockets = amino_acid_array_processor_queries.count_pockets_with_high_drug_score(drug_score_limit)
 
     for pocket_number in range(number_of_pockets):
 
-        pocket = array_processor_queries.fetch_one_pocket_with_high_drug_score(drug_score_limit, pocket_number)
+        pocket = amino_acid_array_processor_queries.fetch_one_pocket_with_high_drug_score(drug_score_limit, pocket_number)
         snapshot = pocket['snapshot']
         sibling_pocket_ids_50 = []
         sibling_snapshots_50 = []
@@ -53,17 +43,21 @@ def process_amino_acid_arrays():
                                              sibling_pocket_ids_50,
                                              sibling_snapshots_50, sibling_pocket_ids_75, sibling_snapshots_75)
 
-        array_processor_queries.save_sibling_arrays_by_id(pocket['id'], sibling_pocket_ids_50,
-                                                          sibling_snapshots_50, sibling_pocket_ids_75,
-                                                          sibling_snapshots_75)
+        amino_acid_array_processor_queries.save_sibling_arrays_by_id(pocket['id'], sibling_pocket_ids_50,
+                                                                     sibling_snapshots_50, sibling_pocket_ids_75,
+                                                                     sibling_snapshots_75)
+        logger.info(f'Processed pocket number: {pocket_number+1} of {number_of_pockets}')
 
-    print("Time Elapsed: " + str(time.time() - start_time))
+    logger.info("Time Elapsed: " + str(time.time() - start_time))
 
 
 def process_pockets_of_snapshots(drug_score_limit, intersection_limit_lower, intersection_limit_higher, moment, pocket,
                                  sibling_pocket_ids_50,
                                  sibling_snapshots_50, sibling_pocket_ids_75, sibling_snapshots_75):
-    pockets_of_snapshot = array_processor_queries.get_pockets_by_snapshot_with_high_drug_score(
+    """Processes all pockets of the currently investigated snapshot and appends best matches and their snapshots
+    to the accumulating lists."""
+
+    pockets_of_snapshot = amino_acid_array_processor_queries.get_pockets_by_snapshot_with_high_drug_score(
         moment, drug_score_limit)
     current_best_match, highest_intersection = get_best_match_for_snapshot(pocket, pockets_of_snapshot)
 
@@ -77,6 +71,9 @@ def process_pockets_of_snapshots(drug_score_limit, intersection_limit_lower, int
 
 
 def get_best_match_for_snapshot(pocket, pockets_of_snapshot):
+    """Returns the best match for parameter 'pocket' from list of pockets 'pockets_of_snapshot' collected from the
+    currently investigated snapshot along with the quantified similarity."""
+
     highest_intersection = 0
     current_best_match = None
 
@@ -91,6 +88,8 @@ def get_best_match_for_snapshot(pocket, pockets_of_snapshot):
 
 
 def calculate_intersection_percentage(list_one, list_two):
+    """This function is used to quantify the similarity of the pockets based on the amino acids residing within them."""
+
     max_of_sizes = max(len(list_one), len(list_two))
     intersection_size = len(set(list_one).intersection(list_two))
     return intersection_size / max_of_sizes

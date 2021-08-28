@@ -1,4 +1,4 @@
-from service import amino_acid_array_processor_service
+from service.amino_acid_array_processor import amino_acid_array_processor_service
 
 
 def main():

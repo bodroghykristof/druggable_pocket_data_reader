@@ -1,11 +1,17 @@
+"""This file contains functions encapsulating business logic method executions, asking inputs, logging
+etc."""
+
 from util import logger
 from util import user_input
-from sys_sql_io import file_reader, sql_writer
+from file_system_io import file_reader
+from sql.data_reader import sql_writer
 from util.constants import *
 import subprocess
 
 
 def ask_for_parameters():
+    """Ask for parameters on which snapshots to analyse."""
+
     while True:
         first_snapshot = user_input.ask_for_positive_numeric_input_with_default("First snapshot", 1)
         last_snapshot = user_input.ask_for_positive_numeric_input_with_default("Last snapshot", "last")
@@ -20,10 +26,14 @@ def ask_for_parameters():
 
 
 def ask_for_input_file():
+    """Ask for name of the original input file with the result of 12.000 simulations."""
+
     return user_input.ask_not_empty_simple_input("Please enter the name of the input file")
 
 
 def hunt_pockets(snapshot):
+    """Run third party application fpcoket on the desired snapshots."""
+
     logger.info(f'Preparing to hunt pockets for snapshot {snapshot}')
     path = get_input_pdb_filename(snapshot)
     subprocess.run(["fpocket", "-f", path])
@@ -31,6 +41,8 @@ def hunt_pockets(snapshot):
 
 
 def read_atoms(first):
+    """Read all atoms from the file."""
+
     logger.info("Reading atom base data from pdb file...")
     path = get_input_pdb_filename(first)
     atoms = file_reader.read_from_pdb_pqr(path, "ATOM")
@@ -39,6 +51,8 @@ def read_atoms(first):
 
 
 def write_atoms(atoms):
+    """Persist atoms into the database."""
+
     logger.info("Inserting atoms into database...")
     for atom in atoms:
         sql_writer.insert_atom_into_table(atom)
@@ -46,6 +60,8 @@ def write_atoms(atoms):
 
 
 def read_atom_positions(snapshot):
+    """Read all atom positions from the file."""
+
     logger.info(f'Reading atom positions for snapshot {snapshot}...')
     path = get_output_pdb_filename(snapshot)
     atom_positions = file_reader.read_from_pdb_pqr(path, "POSITION", snapshot)
@@ -54,6 +70,8 @@ def read_atom_positions(snapshot):
 
 
 def write_atom_positions(snapshot, atom_positions):
+    """Persist atom positions into the database."""
+
     logger.info(f'Writing atom positions to database for snapshot {snapshot}...')
     for position in atom_positions:
         sql_writer.insert_atom_position_into_table(position)
@@ -61,6 +79,8 @@ def write_atom_positions(snapshot, atom_positions):
 
 
 def read_pockets(snapshot):
+    """Read all pockets from the file."""
+
     logger.info(f'Reading pockets for snapshot {snapshot}...')
     path = get_info_file_name(snapshot)
     pockets = file_reader.read_from_info_txt_file(path, snapshot)
@@ -69,6 +89,8 @@ def read_pockets(snapshot):
 
 
 def read_pocket_atoms(snapshot, pocket_index, pocket):
+    """Read all pocket-atom pairs from the file."""
+
     logger.info(f'Reading atoms in pocket number {pocket_index} for snapshot {snapshot}...')
     path = get_pocket_pdb_file_name(snapshot, pocket_index)
     pocket_atoms = file_reader.read_from_pocket_pdb_file(path, pocket)
@@ -77,6 +99,8 @@ def read_pocket_atoms(snapshot, pocket_index, pocket):
 
 
 def write_pockets(snapshot, pocket_index, pocket):
+    """Persist pockets into the database."""
+
     logger.info(f'Inserting pocket number {pocket_index} into database for snapshot {snapshot}...')
     pocket_id = sql_writer.insert_pocket_into_table(pocket)
     logger.info(f'Pocket number {pocket_index} have been successfully inserted into database for snapshot {snapshot}')
@@ -85,6 +109,8 @@ def write_pockets(snapshot, pocket_index, pocket):
 
 
 def read_filling_sphere(snapshot, pocket_id, pocket_index):
+    """Read all filling spheres from the file."""
+
     logger.info(f'Reading filling spheres for snapshot {snapshot}...')
     path = get_pocket_pqr_file_name(snapshot, pocket_index)
     filling_spheres = file_reader.read_from_pdb_pqr(path, "FILLING_SPHERE", snapshot, pocket_id)
@@ -93,6 +119,8 @@ def read_filling_sphere(snapshot, pocket_id, pocket_index):
 
 
 def write_pocket_atoms(snapshot, pocket_atoms, pocket_id):
+    """Persist pocket-atom pairs into the database."""
+
     logger.info(f'Inserting pocket atoms for pocket with ID {pocket_id} in snapshot {snapshot} into database...')
     for pocket_atom in pocket_atoms:
         pocket_atom.pocket_id = pocket_id
@@ -101,6 +129,8 @@ def write_pocket_atoms(snapshot, pocket_atoms, pocket_id):
 
 
 def write_filling_spheres(snapshot, filling_spheres, pocket_id):
+    """Persist filling spheres into the database."""
+
     logger.info(f'Writing filling spheres for pocket with ID {pocket_id} in snapshot {snapshot}...')
     for filling_sphere in filling_spheres:
         sql_writer.insert_filling_sphere_into_table(filling_sphere)

@@ -4,6 +4,14 @@ import os
 
 
 def split_input_file(input_file, start=1, end=0, step=1):
+    """This function takes the input_file containing the result of 12.000 independent simulations and
+    traverses this file to generate a 1 file/simulation output.\n
+    start: defines at which snapshot to start the process\n
+    end: defines at which snapshot to stop the process\n
+    step: defines how many snapshots to skip while traversing the original input file. The default value is 1 which
+    means that no snapshot should be skipped.
+    """
+
     count = 1
     input_path = RESOURCE_PREFIX + input_file
     destination_file = None

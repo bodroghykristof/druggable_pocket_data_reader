@@ -6,5 +6,4 @@ SET amino_acids = (
     join pocket_atom pa on p2.id = pa.pocket_id
     join atom a on pa.atom_id = a.id
     where p2.id = p.id
-    )
-WHERE druggability_score > 0.5;
+    );

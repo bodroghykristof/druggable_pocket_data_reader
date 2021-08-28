@@ -1,3 +1,10 @@
+"""This file contains configurable constants with data about location and naming
+conventions of input and output files. It is worth to mention that it would be a
+far more elegant way to create an external config file for this data. The reason
+why no such solution was implemented is that this project was designed for internal
+usage where modifying the source code does not affect any users."""
+
+
 # CONFIGURABLE INPUT PARAMETERS
 RESOURCE_PREFIX = "resources/sample_data/"
 LOG_DIR = "logs/"

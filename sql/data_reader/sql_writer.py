@@ -1,5 +1,7 @@
-# WRITE MODEL OBJECTS INTO SQL TABLES
-from sys_sql_io.sql_connection_handler import connection_handler
+"""This file is responsible for persisting model objects residing in the memory into the SQL database serving
+the data_reader module of the application."""
+
+from util.sql_connection_handler import connection_handler
 
 import traceback
 import util.logger as logger
@@ -7,6 +9,8 @@ import util.logger as logger
 
 @connection_handler
 def insert_atom_into_table(cursor, atom):
+    """Insert a new Atom entity into table 'atom'."""
+
     insert_query = """
                INSERT INTO atom
                 (id, atom_type, amino_acid_name, protein_id, amino_acid_id, atom_symbol)
@@ -21,6 +25,8 @@ def insert_atom_into_table(cursor, atom):
 
 @connection_handler
 def insert_atom_position_into_table(cursor, atom_position):
+    """Insert a new AtomPosition entity into table 'atom_position'."""
+
     insert_query = """
                INSERT INTO atom_position
                 (id, snapshot, atom_id, pos_x, pos_y, pos_z, occupancy, temperature_factor)
@@ -36,6 +42,8 @@ def insert_atom_position_into_table(cursor, atom_position):
 
 @connection_handler
 def insert_pocket_into_table(cursor, pocket):
+    """Insert a new Pocket entity into table 'pocket'."""
+
     insert_query = """
                INSERT INTO pocket
                 (id, snapshot, score, druggability_score, alpha_spheres_no, total_sasa, polar_sasa, apolar_sasa, 
@@ -61,6 +69,8 @@ def insert_pocket_into_table(cursor, pocket):
 
 @connection_handler
 def insert_pocket_atom_into_table(cursor, pocket_atom):
+    """Insert a new PocketAtom entity into table 'pocket_atom'."""
+
     insert_query = """
                INSERT INTO pocket_atom
                 (id, pocket_id, atom_id)
@@ -75,6 +85,8 @@ def insert_pocket_atom_into_table(cursor, pocket_atom):
 
 @connection_handler
 def insert_filling_sphere_into_table(cursor, filling_sphere):
+    """Insert a new FillingSphere entity into table 'filling_sphere'."""
+
     insert_query = """
                INSERT INTO filling_sphere
                 (id, snapshot, c_or_o_value, atom_type, pocket_id, pos_x, pos_y, pos_z, occupancy, temperature_factor)

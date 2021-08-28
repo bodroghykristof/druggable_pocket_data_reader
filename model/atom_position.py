@@ -1,4 +1,5 @@
 class AtomPosition:
+    """Represents the position of an atom in the protein molecule at a given moment."""
 
     def __init__(self, snapshot, atom_id, pos_x, pos_y, pos_z, occupancy, temperature_factor):
         self.snapshot = snapshot

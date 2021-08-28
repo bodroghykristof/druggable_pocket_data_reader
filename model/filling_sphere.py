@@ -1,4 +1,7 @@
 class FillingSphere:
+    """Represents a theoretical 'negative' of a binding pocket. This concept can be used
+    to predict the VERY VERY rough structure of a potential API (active pharmaceutical ingredient)
+    which could be used to target the binding pocket of the protein."""
 
     def __init__(self, snapshot, c_or_o_value, atom_type, pocket_id, pos_x, pos_y, pos_z, occupancy,
                  temperature_factor):

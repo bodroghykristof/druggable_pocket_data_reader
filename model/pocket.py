@@ -1,4 +1,12 @@
 class Pocket:
+    """Represents a binding pocket found in the protein molecule by fpocket. This concept is used
+    in studying protein structures to characterise a given part of the molecule which is likely
+    to be targeted by a small molecule drug. In our case a Pocket entity is better imagined as the
+    state of a binding pocket at a given moment. This means that different Pocket entities registered
+    in different simulations can be considered as the same if their structure is quire similar. The reason
+    for this is that molecules have a fast changing structure where a binding pocket is never exactly
+    the same in one moment as in the next one. Finding and identifying 'same' binding pockets was the
+    key goal of our project."""
 
     def __init__(self, id_=0, snapshot=0, score=0, druggability_score=0, alpha_spheres_no=0, total_sasa=0, polar_sasa=0,
                  apolar_sasa=0, volume=0, mean_local_hydrobhopic_density=0, mean_alpha_sphere_radius=0,

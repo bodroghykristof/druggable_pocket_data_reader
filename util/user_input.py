@@ -1,4 +1,13 @@
+""" This file contains general utility methods to prompt the user
+to enter inputs via the CLI of the application"""
+
+
 def ask_for_positive_numeric_input_with_default(text, default):
+    """Asks the user to type a non-negative number by using prompt defined
+    by parameter 'text'. If the user hits enter the default value will
+    be returned. If the inserted number is below zero a prompt will appear
+    on the console asking for correction."""
+
     prompt = f'{text} [{default}] : '
     while True:
         try:
@@ -14,6 +23,12 @@ def ask_for_positive_numeric_input_with_default(text, default):
 
 
 def ask_for_binary_input_with_default(text, default):
+    """Asks the user to type one of 2 options by using prompt defined
+    by parameter 'text'. These two options are 'T' and 'F' standing for True
+    and False correspondingly. If the user hits enter the default value will
+    be returned. If the inserted value is neither 'T' nor 'F' a prompt will appear
+    on the console asking for correction."""
+
     prompt = f'{text} [{default}] : '
     while True:
         try:
@@ -29,6 +44,10 @@ def ask_for_binary_input_with_default(text, default):
 
 
 def ask_not_empty_simple_input(text):
+    """Asks the user to type a single non-emtpy string.
+    If the inserted value is empty a prompt will appear on
+    the console asking for correction."""
+
     prompt = f'{text} : '
     while True:
         user_input = input(prompt)
