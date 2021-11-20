@@ -6,7 +6,7 @@ from service.data_reader import data_reader_service
 
 
 def main():
-    """Placeholder for running one of the 2 modules ot the application."""
+    """Placeholder for running one of the 2 modules of the application."""
 
     #####################################
     # ENTRY POINT OF DATA READER MODULE #
